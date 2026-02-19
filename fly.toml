@@ -1,5 +1,10 @@
-app = 'clip-extractor'
-primary_region = 'mad'
+# fly.toml app configuration file generated for clip-claude on 2026-02-19T22:24:54Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'clip-claude'
+primary_region = 'ams'
 
 [build]
 
@@ -9,15 +14,10 @@ primary_region = 'mad'
   auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-
-[checks]
-  [checks.health]
-    type = 'http'
-    port = 8080
-    path = '/health'
-    interval = '30s'
-    timeout = '5s'
+  processes = ['app']
 
 [[vm]]
-  size = 'shared-cpu-1x'
-  memory = '512mb'
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
