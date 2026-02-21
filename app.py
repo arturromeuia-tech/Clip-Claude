@@ -2,16 +2,16 @@ import os
 import uuid
 import time
 from pathlib import Path
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, send_file
 from detector import detect_clip, crop_video
 
-# template_folder='.' lets Flask find index.html next to app.py
-app = Flask(__name__, template_folder='.')
+app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 UPLOAD = '/tmp/clips'
 os.makedirs(UPLOAD, exist_ok=True)
 
 ALLOWED = {'mp4', 'mov', 'avi', 'mkv', 'webm', 'm4v'}
+_HTML = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html')
 
 
 def cleanup(max_min=30):
@@ -23,7 +23,7 @@ def cleanup(max_min=30):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file(_HTML, mimetype='text/html')
 
 
 @app.route('/api/process', methods=['POST'])
