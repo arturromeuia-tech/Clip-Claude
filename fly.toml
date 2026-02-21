@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for clip-claude on 2026-02-19T22:24:54Z
+# fly.toml app configuration file generated for clip-claude on 2026-02-21T01:05:00Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -20,4 +20,4 @@ primary_region = 'ams'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
+  memory_mb = 2048
