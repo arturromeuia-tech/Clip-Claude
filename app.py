@@ -5,7 +5,8 @@ from pathlib import Path
 from flask import Flask, request, jsonify, send_file, render_template
 from detector import detect_clip, crop_video
 
-app = Flask(__name__)
+# template_folder='.' lets Flask find index.html next to app.py
+app = Flask(__name__, template_folder='.')
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 UPLOAD = '/tmp/clips'
 os.makedirs(UPLOAD, exist_ok=True)
@@ -43,31 +44,32 @@ def process():
     out = os.path.join(UPLOAD, f'{job}_clip.mp4')
     file.save(inp)
 
-    # Detect
-    bounds = detect_clip(inp)
-    if not bounds:
+    # Detect  →  (top, bot, left, right, vid_w, vid_h, method)
+    result = detect_clip(inp)
+    if not result:
         os.unlink(inp)
         return jsonify({'error': 'No se detectaron bordes del clip. ¿El video tiene overlay/diseño?'}), 422
 
-    top, bot, left, right, vid_w, vid_h = bounds
+    top, bot, left, right, vid_w, vid_h, method = result
 
     # Crop
-    ok = crop_video(inp, out, bounds)
+    ok = crop_video(inp, out, result)
     if not ok or not os.path.exists(out):
-        if os.path.exists(inp): os.unlink(inp)
+        if os.path.exists(inp):
+            os.unlink(inp)
         return jsonify({'error': 'Error al recortar el video'}), 500
 
     orig_size = os.path.getsize(inp)
     clip_size = os.path.getsize(out)
 
-    # Clean input
     os.unlink(inp)
 
     return jsonify({
-        'job': job,
+        'job':    job,
+        'method': method,
         'bounds': {'top': top, 'bottom': bot, 'left': left, 'right': right},
         'original': {'w': vid_w, 'h': vid_h, 'size': orig_size},
-        'clip': {'w': right - left, 'h': bot - top, 'size': clip_size},
+        'clip':     {'w': right - left, 'h': bot - top, 'size': clip_size},
         'download': f'/api/download/{job}'
     })
 

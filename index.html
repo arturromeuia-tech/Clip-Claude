@@ -73,7 +73,7 @@ input[type=file]{display:none}
   <div class="hd">
     <h1>✂ CLIP EXTRACTOR</h1>
     <p>Extrae el clip original de videos diseñados</p>
-    <span class="badge">v2.0 · any color · server-side</span>
+    <span class="badge">v3.0 · Claude Vision · any design</span>
   </div>
 
   <div class="upload" id="drop" onclick="$fi.click()">
@@ -101,6 +101,7 @@ input[type=file]{display:none}
       <div class="stat"><div class="stat-l">Clip</div><div class="stat-v" id="sClip">—</div></div>
       <div class="stat"><div class="stat-l">Reducción</div><div class="stat-v" id="sRed">—</div></div>
       <div class="stat"><div class="stat-l">Recortado</div><div class="stat-v" id="sCrop">—</div></div>
+      <div class="stat" style="grid-column:1/-1"><div class="stat-l">Detección</div><div class="stat-v" id="sMethod" style="font-size:12px">—</div></div>
     </div>
     <div class="vid-box"><video id="resVid" controls playsinline></video></div>
     <a class="btn btn-dl" id="btnDl" href="#" download>⬇ DESCARGAR CLIP</a>
@@ -109,8 +110,8 @@ input[type=file]{display:none}
 
   <div class="info-cards">
     <div class="info-card">
-      <b>🎯 Detección Inteligente</b>
-      <p>Detecta el clip sin importar el color del overlay (negro, blanco, colores). Analiza gradientes y diversidad de contenido.</p>
+      <b>🎯 Claude Vision</b>
+      <p>Detección con IA visual: analiza el diseño completo, detecta los 4 bordes exactos del clip y se adapta a cualquier layout sin importar colores ni estructura.</p>
     </div>
     <div class="info-card">
       <b>⚡ Procesamiento en servidor</b>
@@ -200,6 +201,7 @@ async function process(){
     document.getElementById('sClip').textContent=`${cl.w}×${cl.h}`;
     document.getElementById('sRed').textContent=`${Math.round((1-cl.size/o.size)*100)}%`;
     document.getElementById('sCrop').textContent=`${Math.round((1-(cl.w*cl.h)/(o.w*o.h))*100)}% área`;
+    document.getElementById('sMethod').textContent=data.method==='claude-vision'?'Claude Vision ✦':'Algorítmico';
 
     const dlUrl=data.download;
     document.getElementById('resVid').src=dlUrl;
